@@ -148,4 +148,46 @@ module.exports = {
 			.assert.visible("#div")
 			.end();
 	},
+	
+	"Single View Compare": function(browser) {
+	        var imageFile = "bs-docs-masthead.png";
+	        var path = "./test/bootstrap";
+	        var element = ".bs-docs-masthead";
+	
+	        return browser
+	            .url('http://getbootstrap.com/')
+	            .waitForElementVisible('body', 1000)
+	            .verify.jqueryElementPresent(element)
+	            .resizeWindow(1024, 600)
+	            .pause(1000)
+	            .saveElementScreenshot(element, path+'/results/'+imageFile)
+	            .verify.compareScreenshot(imageFile, path)
+	            .end();
+    	},
+    	
+    	"Multiple View Compare": function(browser) {
+	        var imageFileName = "bs-docs-masthead_";
+	        var imageFileExt = ".png";
+	        var path = "./test/bootstrap_multiple";
+	        var element = ".bs-docs-masthead";
+	
+	        var env = [
+	            {device: "tablet_landscape", width: "1024", height: "768"},
+	            {device: "tablet_portrait", width: "768", height: "1024"},
+	            {device: "phone", width: "320", height: "480"}
+	        ];
+	
+	        browser
+	            .url('http://getbootstrap.com/')
+	            .waitForElementVisible('body', 1000)
+	            .verify.jqueryElementPresent(element);
+	
+	        for (var k in env){
+	            browser.resizeWindow(env[k].width, env[k].height)
+	                .pause(1000)
+	                .saveElementScreenshot(element, path+'/results/'+imageFileName+env[k].device+imageFileExt )
+	                .verify.compareScreenshot(imageFileName+env[k].device+imageFileExt, path);
+	        }
+	        browser.end();
+	    }
 };
